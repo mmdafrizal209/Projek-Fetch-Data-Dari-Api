@@ -1,0 +1,74 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="x-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fetch Api</title>
+</head>
+<body>
+  
+  <div id="kategori"></div>
+
+  <table border="1">
+      <thead>
+          <tr>
+              <th>No</th>
+              <th>Nama</th>
+              <th>kategori</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr>
+              <td colspan="3">NO DATA SELECTED</td>
+          </tr>
+      </tbody>
+  </table>
+
+  <script>
+    let kategoriData = [];
+
+    const loadData = async () => {
+        try {
+            const url = await fetch('https://my-json-server.typicode.com/wahidunutas/fakeapi/category');
+            kategoriData = await url.json();
+            loadDataKategori(kategoriData);
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const loadDataKategori = (data) => {
+        const output = data.map((el) => {
+            return `
+                <ul>
+                    <li><a href="#" onclick='loadMyData("${el.id}")'>${el.name}</a></li>
+                </ul>
+                 `
+        }).join('')
+        document.getElementById("kategori").innerHTML = output;
+    }
+        
+    function loadMyData(id) {
+    fetch('https://my-json-server.typicode.com/wahidunutas/fakeapi/data?kategori.id=' + id)
+    .then((res) => res.json())
+    .then((data) => {
+        let ktg = ''
+        let no = 1;
+        data.forEach(element => {
+            ktg += `
+            <tr>
+                <td>` + (no++) + `</td>
+                <td>${element.name}</td>
+                <td>${element.kategori.nama}</td>
+            </tr>
+        `
+        });
+        document.querySelector("tbody").innerHTML = ktg
+    })
+}
+        
+    loadData();
+</script>
+
+</body>
+</html>
